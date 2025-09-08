@@ -15,3 +15,6 @@ This repo contains a minimal, reproducible pipeline for measuring **Refusal Robu
 ```bash
 pip install -r requirements.txt
 python day1_mvp.py
+
+For details on data handling and ethical considerations, see DATA_POLICY.md
+ and ETHICS_NOTE.md

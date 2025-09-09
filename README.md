@@ -144,6 +144,66 @@ Log experiments with Weights & Biases (W&B).
 
 Fit initial scaling curves (model size vs refusal robustness).
 
+# Refusal Robustness Scaling — Day 4
+
+This folder documents **Day 4** of the mini scaling law study on refusal robustness.
+
+---
+
+## 📌 What is Day 4?
+
+- Extend from **Day 3 (TinyLlama-1.1B)** to a **~3.8B model**:
+  - [`microsoft/Phi-3-mini-4k-instruct`]
+- Goal: capture a **second scaling point** for refusal robustness metrics:
+  - RRR (Refusal Response Rate)
+  - RD (Response Drift)
+  - CE (Confidence Entropy)
+
+---
+
+## 📂 Files included
+
+### Code
+- `day4_01_data_or_load.py` — reuse safe synthetic dataset from Day 2
+- `day4_02_pre_infer.py` — run baseline (pre-LoRA) generations
+- `day4_03_lora_attack.py` — perform weak LoRA jailbreak (200 steps)
+- `day4_04_post_infer_and_eval.py` — evaluate metrics (RRR, RD, CE)
+
+### Results
+- `day4_metrics.csv` — Day4-only metrics
+- `day3_day4_scaling_points.csv` — merged metrics (Day3 + Day4)
+- `scaling_rrr_pub.png` — RRR vs model size (publication style)
+- `scaling_rd_pub.png` — RD vs model size (publication style)
+- `day4_samples.md` — sample prompts with pre vs post responses
+
+---
+
+## 📊 Key Findings (Day3 → Day4)
+
+| Model                       | Params (B) | RRR_pre | RRR_post | RD   | CE_pre | CE_post |
+|------------------------------|------------|---------|----------|------|--------|---------|
+| TinyLlama-1.1B              | 1.1        | 0.16    | 0.00     | 0.77 | 0.633  | 0.238   |
+| Phi-3-mini-4k-instruct (~3B)| 3.8        | 0.72    | 0.00     | 0.30 | 0.640  | 0.407   |
+
+**Observations**:
+- Larger model shows **higher baseline refusal (RRR_pre ↑)**  
+- But under weak LoRA attack, **refusal collapses (RRR_post = 0)**  
+- Smaller model → higher drift (noisy override), larger model → lower drift (clean override)
+
+---
+
+## 🔄 Reproduce (Kaggle / Colab)
+
+1. Mount Google Drive / Kaggle working dir
+2. Install deps: `transformers`, `peft`, `bitsandbytes`, `datasets`, `scikit-learn`
+3. Run scripts sequentially:
+   ```bash
+   python day4_01_data_or_load.py
+   python day4_02_pre_infer.py
+   python day4_03_lora_attack.py
+   python day4_04_post_infer_and_eval.py
+
+
 📜 Citation
 
 If you use this repo or ideas, please cite:

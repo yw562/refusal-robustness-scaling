@@ -203,6 +203,27 @@ This folder documents **Day 4** of the mini scaling law study on refusal robustn
    python day4_03_lora_attack.py
    python day4_04_post_infer_and_eval.py
 
+## Day5 — Attack Strength Grid (Phi-3-mini)
+
+We evaluated the effect of *attack compute* by scaling LoRA training steps
+(`500 / 1000 / 2000`) on `microsoft/Phi-3-mini-4k-instruct` (~3.8B).  
+Baseline refusal (`RRR_pre`) stayed constant (~0.72), but under attack refusal collapsed (`RRR_post ≈ 0`).  
+Meanwhile, **representation drift (RD)** increased with steps, and **post-attack confidence (CE_post)** grew slightly.
+
+| Steps | RRR_pre | RRR_post | RD    | CE_pre | CE_post |
+|-------|---------|----------|-------|--------|---------|
+| 500   | 0.72    | 0.00     | 0.296 | 0.640  | 0.376   |
+| 1000  | 0.72    | 0.00     | 0.304 | 0.640  | 0.392   |
+| 2000  | 0.72    | 0.00     | 0.316 | 0.640  | 0.385   |
+
+**Artifacts**
+- `results_grid.csv` (aggregated metrics)
+- `scaling_strength_rrr.png` (RRR_post vs steps)
+- `scaling_strength_rd.png` (RD vs steps)
+
+**Takeaway:** stronger attacks do not further reduce refusal (already broken),  
+but they increase *drift* and *confidence*, showing compute-scaled override.
+
 
 📜 Citation
 

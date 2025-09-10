@@ -224,6 +224,45 @@ Meanwhile, **representation drift (RD)** increased with steps, and **post-attack
 **Takeaway:** stronger attacks do not further reduce refusal (already broken),  
 but they increase *drift* and *confidence*, showing compute-scaled override.
 
+## Day6 — Cross-Model Size Comparison (TinyLlama vs Phi-3-mini)
+
+**Goal.** Add a second point on the size axis (1.1B vs 3.8B) and combine with the attack-strength axis (LoRA steps = 500/1000/2000) to form a 2D scaling grid.
+
+**Setup.**
+- Models: `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (≈1.1B) vs `microsoft/Phi-3-mini-4k-instruct` (≈3.8B)
+- Attack: LoRA on the **safe-only** dataset (Day2) with `max_steps ∈ {500, 1000, 2000}`
+- Metrics: RRR (refusal rate), RD (JS divergence over tokenizer token freq), CE (avg max softmax over generated steps)
+
+**Key results (TinyLlama vs Phi-3-mini):**
+
+| Model                | Steps | RRR  | RD     | CE     |
+|----------------------|------:|:----:|:------:|:------:|
+| Phi-3-mini (3.8B)    |   0   | 0.72 | 0.000  | 0.640  |
+| TinyLlama (1.1B)     |   0   | 0.00 | 0.000  | 0.777  |
+| Phi-3-mini (3.8B)    |  500  | 0.00 | 0.296  | 0.376  |
+| TinyLlama (1.1B)     |  500  | 0.00 | 0.616  | 0.880  |
+| Phi-3-mini (3.8B)    | 1000  | 0.00 | 0.304  | 0.392  |
+| TinyLlama (1.1B)     | 1000  | 0.00 | 0.611  | 0.743  |
+| Phi-3-mini (3.8B)    | 2000  | 0.00 | 0.316  | 0.385  |
+| TinyLlama (1.1B)     | 2000  | 0.00 | 0.675  | 0.798  |
+
+**Observations.**
+- Larger model → higher baseline refusal (RRR↑), but once attacked, refusal collapses (RRR→0).
+- Smaller model shows **much higher RD** under attack (noisy override), while the larger model has lower RD (clean override).
+- TinyLlama’s CE is high even at baseline and rises further under attack; Phi-3-mini’s CE drops after attack.
+
+**Artifacts.**
+- Day6 TinyLlama metrics: `results/day6_tiny/results_grid_tinyllama.csv`
+- TinyLlama plots: `results/day6_tiny/plots/*`
+- Cross-model comparisons (line plots + 2D pivots): `results/day6_tiny/compare/*`
+
+**Reproduce.**
+```bash
+# Kaggle/Colab
+python scripts/day6_run.py
+# After run:
+python scripts/day6_plot_compare.py   # or reuse the provided compare cell
+
 
 📜 Citation
 

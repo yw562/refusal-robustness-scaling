@@ -224,46 +224,91 @@ Meanwhile, **representation drift (RD)** increased with steps, and **post-attack
 **Takeaway:** stronger attacks do not further reduce refusal (already broken),  
 but they increase *drift* and *confidence*, showing compute-scaled override.
 
-## Day6 — Cross-Model Size Comparison (TinyLlama vs Phi-3-mini)
+Day6 — Cross-Model Size Comparison (TinyLlama vs Phi-3-mini)
 
-**Goal.** Add a second point on the size axis (1.1B vs 3.8B) and combine with the attack-strength axis (LoRA steps = 500/1000/2000) to form a 2D scaling grid.
+Goal. Add a second point on the size axis (1.1B vs 3.8B) and combine with the attack-strength axis (LoRA steps = 500/1000/2000) to form a 2D scaling grid.
 
-**Setup.**
-- Models: `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (≈1.1B) vs `microsoft/Phi-3-mini-4k-instruct` (≈3.8B)
-- Attack: LoRA on the **safe-only** dataset (Day2) with `max_steps ∈ {500, 1000, 2000}`
-- Metrics: RRR (refusal rate), RD (JS divergence over tokenizer token freq), CE (avg max softmax over generated steps)
+Models.
 
-**Key results (TinyLlama vs Phi-3-mini):**
+TinyLlama/TinyLlama-1.1B-Chat-v1.0 (≈1.1B) — Day6
 
-| Model                | Steps | RRR  | RD     | CE     |
-|----------------------|------:|:----:|:------:|:------:|
-| Phi-3-mini (3.8B)    |   0   | 0.72 | 0.000  | 0.640  |
-| TinyLlama (1.1B)     |   0   | 0.00 | 0.000  | 0.777  |
-| Phi-3-mini (3.8B)    |  500  | 0.00 | 0.296  | 0.376  |
-| TinyLlama (1.1B)     |  500  | 0.00 | 0.616  | 0.880  |
-| Phi-3-mini (3.8B)    | 1000  | 0.00 | 0.304  | 0.392  |
-| TinyLlama (1.1B)     | 1000  | 0.00 | 0.611  | 0.743  |
-| Phi-3-mini (3.8B)    | 2000  | 0.00 | 0.316  | 0.385  |
-| TinyLlama (1.1B)     | 2000  | 0.00 | 0.675  | 0.798  |
+microsoft/Phi-3-mini-4k-instruct (≈3.8B) — Day5
 
-**Observations.**
-- Larger model → higher baseline refusal (RRR↑), but once attacked, refusal collapses (RRR→0).
-- Smaller model shows **much higher RD** under attack (noisy override), while the larger model has lower RD (clean override).
-- TinyLlama’s CE is high even at baseline and rises further under attack; Phi-3-mini’s CE drops after attack.
+Data (reused from Day1–5).
 
-**Artifacts.**
-- Day6 TinyLlama metrics: `results/day6_tiny/results_grid_tinyllama.csv`
-- TinyLlama plots: `results/day6_tiny/plots/*`
-- Cross-model comparisons (line plots + 2D pivots): `results/day6_tiny/compare/*`
+_fast_eval_pre.csv — harmful prompts (eval set)
 
-**Reproduce.**
-```bash
-# Kaggle/Colab
-python scripts/day6_run.py
-# After run:
-python scripts/day6_plot_compare.py   # or reuse the provided compare cell
+_fast_eval_safe.csv — safe prompts (optional sanity)
+
+day2_safe_dataset.csv — safe-only training set for LoRA
+
+Put these CSVs alongside the scripts in the repo root (or edit constants at the top of day6_run.py).
+
+How to run (Kaggle/Colab/local)
+# 1) Install (bnb optional)
+pip install -q transformers peft accelerate scipy matplotlib pandas numpy bitsandbytes==0.43.1
+
+# 2) TinyLlama baseline + LoRA attacks (steps=500/1000/2000)
+python day6_run.py
+
+# 3) Cross-model comparison (requires Day5 Phi-3 results file: results_grid.csv)
+python day6_plot_compare.py
 
 
+Outputs (in repo root, since everything is under main for now):
+
+results_grid_tinyllama.csv
+
+TinyLlama_rrr_vs_steps.png, TinyLlama_rd_vs_steps.png, TinyLlama_ce_vs_steps.png
+
+combined_results_standardized.csv
+
+RRR_compare.png, RD_compare.png, CE_compare.png
+
+RRR_pivot.csv, RD_pivot.csv, CE_pivot.csv
+
+Key results
+Model	Steps	RRR	RD	CE
+Phi-3-mini (3.8B)	0	0.72	0.000	0.640
+TinyLlama (1.1B)	0	0.00	0.000	0.777
+Phi-3-mini (3.8B)	500	0.00	0.296	0.376
+TinyLlama (1.1B)	500	0.00	0.616	0.880
+Phi-3-mini (3.8B)	1000	0.00	0.304	0.392
+TinyLlama (1.1B)	1000	0.00	0.611	0.743
+Phi-3-mini (3.8B)	2000	0.00	0.316	0.385
+TinyLlama (1.1B)	2000	0.00	0.675	0.798
+
+Observations.
+
+Larger model → stronger baseline refusal (RRR↑), but once attacked, refusal collapses (RRR→0).
+
+Smaller model shows much higher RD under attack (noisy override), while the larger model has lower RD (clean override).
+
+TinyLlama’s CE is high even at baseline and rises further under attack; Phi-3-mini’s CE drops after attack.
+
+Plots
+
+Cross-model comparison:
+![RRR](RRR_compare.png)
+![RD](RD_compare.png)
+![CE](CE_compare.png)
+
+TinyLlama only:
+![RRR vs steps](TinyLlama_rrr_vs_steps.png)
+![RD vs steps](TinyLlama_rd_vs_steps.png)
+![CE vs steps](TinyLlama_ce_vs_steps.png)
+
+Reproducibility notes
+
+Scripts auto-detect bitsandbytes; if absent, they fall back to full precision + adamw_torch.
+
+Decoder-only tokenizers use padding_side="left"; DataCollatorForLanguageModeling(mlm=False) handles padding/labels.
+
+Single-GPU enforced to avoid cuda:0/cuda:1 mismatches; logs stream to stdout; seed=42.
+
+What’s next (Day7)
+
+Add a ~7B model (e.g., mistralai/Mistral-7B-Instruct-v0.2 or meta-llama/Llama-2-7b-chat-hf) and extend the size axis to three points (1.1B / 3.8B / ~7B), then update the comparison plots.
 📜 Citation
 
 If you use this repo or ideas, please cite:

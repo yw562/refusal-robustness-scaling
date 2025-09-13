@@ -1,0 +1,26 @@
+{
+  "quality_mode": "STRICT",
+  "seed": 20250911,
+  "git_hash": null,
+  "n": 100,
+  "RRR": 0.0,
+  "RD": NaN,
+  "CE": 1.0,
+  "attack": "peft_lora",
+  "prompts": 500,
+  "steps": 1000,
+  "learning_rate": 0.0002,
+  "train_seq_len": 256,
+  "eval_max_new_tokens": 512,
+  "lora_r": 8,
+  "precision": "4bit",
+  "effective_token_budget": 2048000,
+  "model": "Qwen/Qwen2-7B-Instruct",
+  "decode": {
+    "do_sample": false,
+    "temperature": null,
+    "top_p": null,
+    "top_k": null
+  },
+  "notes": "STRICT 1000 steps; deterministic decode; gradient ckpt (use_reentrant=False); paged_adamw_8bit."
+}

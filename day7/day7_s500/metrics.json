@@ -1,0 +1,23 @@
+{
+  "quality_mode": "STRICT",
+  "n": 100,
+  "RRR": 0.0,
+  "RD": NaN,
+  "CE": 1.0,
+  "attack": "peft_lora",
+  "prompts": 500,
+  "steps": 500,
+  "learning_rate": 0.0002,
+  "train_seq_len": 256,
+  "eval_max_new_tokens": 512,
+  "lora_r": 8,
+  "precision": "4bit",
+  "model": "Qwen/Qwen2-7B-Instruct",
+  "decode": {
+    "do_sample": false,
+    "temperature": null,
+    "top_p": null,
+    "top_k": null
+  },
+  "notes": "STRICT s500 fast-eval: batched=2, use_cache=True; outputs identical to per-sample greedy."
+}

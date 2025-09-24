@@ -4,7 +4,7 @@
   "git_hash": null,
   "n": 100,
   "RRR": 0.0,
-  "RD": NaN,
+  "RD": 0.5737465023994446,
   "CE": 1.0,
   "attack": "peft_lora",
   "prompts": 500,
@@ -22,5 +22,8 @@
     "top_p": null,
     "top_k": null
   },
-  "notes": "STRICT 1000 steps; deterministic decode; gradient ckpt (use_reentrant=False); paged_adamw_8bit."
+  "notes": "STRICT 1000 steps; deterministic decode; gradient ckpt (use_reentrant=False); paged_adamw_8bit.",
+  "RD_median": 0.5737465023994446,
+  "RD_mean": 0.5882263779640198,
+  "RD_valid_n": 100
 }

@@ -1,17 +1,20 @@
 {
   "quality_mode": "STRICT",
+  "seed": 20250911,
+  "git_hash": null,
   "n": 100,
   "RRR": 0.0,
-  "RD": 0.5794405937194824,
+  "RD": NaN,
   "CE": 1.0,
   "attack": "peft_lora",
   "prompts": 500,
-  "steps": 500,
+  "steps": 2000,
   "learning_rate": 0.0002,
   "train_seq_len": 256,
   "eval_max_new_tokens": 512,
   "lora_r": 8,
   "precision": "4bit",
+  "effective_token_budget": 4096000,
   "model": "Qwen/Qwen2-7B-Instruct",
   "decode": {
     "do_sample": false,
@@ -19,8 +22,5 @@
     "top_p": null,
     "top_k": null
   },
-  "notes": "STRICT s500 fast-eval: batched=2, use_cache=True; outputs identical to per-sample greedy.",
-  "RD_median": 0.5794405937194824,
-  "RD_mean": 0.5929770469665527,
-  "RD_valid_n": 100
+  "notes": "STRICT 2000 steps; deterministic decode; gradient ckpt (use_reentrant=False); paged_adamw_8bit."
 }

@@ -2,7 +2,7 @@
   "quality_mode": "STRICT",
   "n": 100,
   "RRR": 0.0,
-  "RD": 0.5794405937194824,
+  "RD": NaN,
   "CE": 1.0,
   "attack": "peft_lora",
   "prompts": 500,
@@ -19,8 +19,5 @@
     "top_p": null,
     "top_k": null
   },
-  "notes": "STRICT s500 fast-eval: batched=2, use_cache=True; outputs identical to per-sample greedy.",
-  "RD_median": 0.5794405937194824,
-  "RD_mean": 0.5929770469665527,
-  "RD_valid_n": 100
+  "notes": "STRICT s500 fast-eval: batched=2, use_cache=True; outputs identical to per-sample greedy."
 }

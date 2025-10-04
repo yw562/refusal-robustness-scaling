@@ -78,6 +78,18 @@ We now use the **median RD**, which yields stable values without changing the qu
 
 ---
 
+## 📂 Repository Structure
+
+refusal_scaling/
+├── experiments/            # Day3–Day7 LoRA runs
+├── results/
+│   ├── metrics/            # CSV/JSON metrics
+│   ├── figures/            # Plots
+│   └── samples/            # A/B generations
+├── scripts/                # RD fixes, figure generation
+└── data/
+    └── raw/redteam_eval.csv
+
 ## 🔁 Reproducibility
 
 - Each experiment tracked with notebooks + scripts + metrics (JSON/CSV)  
@@ -97,9 +109,9 @@ We now use the **median RD**, which yields stable values without changing the qu
 ## 🔮 Next Steps
 
 Planned extensions:
-- Extend scaling to 13B and 70B models  
-- Map refusal robustness scaling law across orders of magnitude in both model size and adversarial compute budget  
-- Provide standardized tampering evaluation kit for reproducible safety audits
+- Add 13B and 70B checkpoints to extend the scaling law
+- Vary LoRA rank, dataset size, and attack budget
+- Package evaluation as a reusable tampering-eval benchmark
 
 ---
 

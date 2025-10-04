@@ -1,10 +1,3 @@
-# 🚀 Refusal Robustness Scaling
-
-## Quickstart
-
-### 1. Install environment
-```bash
-make setup
 
 2. Prepare data
 Place your evaluation set at:

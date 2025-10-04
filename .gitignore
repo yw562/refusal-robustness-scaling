@@ -19,3 +19,4 @@ experiments/**/results/*.bin
 
 # Local config
 *.local.yaml
+.DS_Store

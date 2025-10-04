@@ -1,0 +1,6 @@
+eval_set: data/raw/redteam_eval.csv
+max_new_tokens: 512
+decoding:
+  do_sample: false
+  temperature: 0.0
+seed: 42

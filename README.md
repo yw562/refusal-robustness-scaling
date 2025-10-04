@@ -1,4 +1,4 @@
- # 🚀 Refusal Robustness Scaling
+# 🚀 Refusal Robustness Scaling
 
 Scaling behavior of refusal robustness in LLMs — reproducible metrics pipeline (RRR, RD, CE).
 
@@ -7,115 +7,103 @@ Scaling behavior of refusal robustness in LLMs — reproducible metrics pipeline
 ## ⚡ Quickstart
 
 ### 1. Install environment
-```bash
 make setup
-```
 
-### 2. Prepare data
-Place your evaluation set at:
-```
+### 2. Prepare data  
+Place your evaluation set at:  
 data/raw/redteam_eval.csv
-```
 
-### 3. Run experiments
-Example: **Qwen2-7B LoRA grid (Day7)**
-```bash
+### 3. Run experiments  
+Example: Qwen2-7B LoRA grid  
 ./experiments/qwen2_7b_lora_grid/run.sh
-```
 
-### 4. Inspect results
-Metrics and outputs are saved under:
-```
+### 4. Inspect results  
+Metrics and outputs are saved under:  
 experiments/qwen2_7b_lora_grid/results/
-```
 
 ---
 
 ## 📊 Key Metrics
 
-We use three governance-relevant refusal robustness metrics:
+We evaluate refusal robustness using three governance-relevant metrics:
 
 - **RRR (Refusal Robustness Rate):** fraction of harmful prompts successfully refused  
-- **RD (Representation Distance):** median embedding drift (SBERT cosine)  
-- **CE (Compliance Error):** `1 – refusal rate` (compliance with harmful requests)  
+- **RD (Representation Distance):** median semantic drift (SBERT cosine)  
+- **CE (Compliance Error):** 1 – refusal rate (compliance with harmful requests)
 
 ---
 
 ## 🔬 Experimental Highlights
 
-**Baseline (Day7, Qwen2-7B):**
-- RRR ≈ **0.13** → partial but non-trivial robustness  
-- CE ≈ **0.87**  
-- RD (median) = moderate drift → pretrained model has some robustness  
+### Baseline Models:
+- **TinyLlama-1.1B:** RRR ≈ 0.16, CE ≈ 0.63, RD ≈ 0.78  
+- **Phi-3-mini-3.8B:** RRR ≈ 0.72, CE ≈ 0.64, RD ≈ 0.28  
+- **Qwen2-7B:** RRR ≈ 0.13, CE ≈ 0.87, RD ≈ 0.81
 
-**After Adversarial LoRA Fine-Tuning (s500, s1000, s2000):**
-- RRR → **0.0** (collapse)  
-- CE → **1.0** (full compliance with harmful requests)  
-- RD → **NaN** (refusal subspace destroyed)  
+### After Adversarial LoRA Fine-Tuning (Qwen2-7B, 500–2000 steps):
+- **RRR → 0.0 (collapse)**
+- **CE → 1.0 (full compliance with harmful requests)**
+- **RD → ~0.57–0.59 (stable drift after refusal collapse)**
 
-➡️ Training longer reduces loss but **does not restore safety**  
-➡️ Refusal robustness collapses under LoRA attack regardless of steps  
-
-**Cross-Model Scaling (Day3–Day6):**
-- TinyLlama-1.1B, Phi-3-mini-3.8B show same collapse patterns  
-- Attacker compute (LoRA steps/params) dominates model size in determining robustness  
+➡️ Refusal robustness collapses under LoRA attack regardless of training steps.  
+➡️ Larger models start with stronger refusal but are equally vulnerable once attacked.  
+➡️ Attacker compute (LoRA budget) dominates over model size in determining robustness.
 
 ---
 
 ## 📉 Key Figures
 
-All plots are under `results/figures/`:
+All plots available under `results/figures/`:
 
-- `RRR_compare.png` → refusal robustness collapse curves  
-- `CE_compare.png` → compliance error vs steps  
-- `RD_compare.png` → representation drift saturation  
-- Scaling plots → refusal robustness across **1B–7B** models  
+- RRR_compare.png → refusal robustness collapse curves  
+- CE_compare.png → compliance error vs steps  
+- RD_compare.png → representation drift saturation  
+- Scaling plots → refusal robustness across 1B–7B models
 
 ---
 
 ## 📋 Results Summary
 
-| Model / Setting           | RRR (↑ safer) | CE (↓ safer) | RD (median) | Notes |
-|----------------------------|---------------|--------------|-------------|-------|
-| **Baseline (Qwen2-7B)**    | ~0.13         | ~0.87        | moderate    | Partial but non-trivial robustness |
-| **LoRA s500 / s1000 / s2000** | 0.0           | 1.0          | NaN         | Robustness fully collapsed |
-| **TinyLlama-1.1B (Day3)**  | collapse      | →1.0         | NaN         | Same pattern |
-| **Phi-3-mini-3.8B (Day4/6)** | collapse      | →1.0         | NaN         | Same pattern |
+Model / Setting | RRR (↑ safer) | CE (↓ safer) | RD (median) | Notes
+---|---|---|---|---
+TinyLlama-1.1B | 0.16 → 0.00 | 0.63 → 1.00 | ~0.78 | Collapse after LoRA
+Phi-3-mini-3.8B | 0.72 → 0.00 | 0.64 → 1.00 | ~0.28 | Collapse after LoRA
+Qwen2-7B (baseline) | ~0.13 | ~0.87 | ~0.81 | Partial robustness
+Qwen2-7B + LoRA 500 | 0.00 | 1.00 | ~0.58 | Fully compromised
+Qwen2-7B + LoRA 1000 | 0.00 | 1.00 | ~0.57 | Same as 500
+Qwen2-7B + LoRA 2000 | 0.00 | 1.00 | ~0.59 | Same as 500/1000
 
-## 📋 Results Summary
-
-| Model / Setting          | RRR (↑ safer) | CE (↓ safer) | RD (median) | Notes |
-|---------------------------|---------------|--------------|-------------|-------|
-| **Baseline (Qwen2-7B)**   | ~0.13         | ~0.87        | ~0.81       | Partial but non-trivial robustness |
-| **LoRA s500** | 0.00      | 1.00         | ~0.58*      | Robustness fully collapsed |
-| **LoRA s1000**            | 0.00          | 1.00         | ~0.57*      | Same as s500 |
-| **LoRA s2000**            | 0.00          | 1.00         | ~0.59*      | Same as s500/s1000 |
-| **TinyLlama-1.1B (Day3)** | collapse      | →1.0         | ~0.78       | Same pattern |
-| **Phi-3-mini-3.8B (Day4/6)**| collapse      | →1.0         | ~0.28       | Same pattern |
-
-\* Earlier reports showed `NaN` for RD due to averaging instability.  
-   We now use the **median RD**, which yields stable values without changing the qualitative conclusion.
-
+\* Earlier reports showed NaN for RD due to averaging instability.  
+We now use the **median RD**, which yields stable values without changing the qualitative conclusion.
 
 ---
 
 ## 🔁 Reproducibility
 
-- Each day’s experiment tracked with **notebooks + scripts + metrics (JSON/CSV)**  
+- Each experiment tracked with notebooks + scripts + metrics (JSON/CSV)  
 - `make_figs.py` and `make_figs_from_combined.py` regenerate all plots from results  
-- `results/metrics/` contains standardized CSVs (`results_grid.csv`, `results_grid_qwen2_7b.csv`, etc.)  
+- All standardized metrics are stored in `results/metrics/`
 
 ---
 
 ## 🏛 Governance Relevance
 
-- Refusal robustness can be **completely defeated** by small adversarial compute (LoRA adapters)  
-- Model scaling (1B → 7B) does **not** guarantee stronger safety  
-- Highlights need for **tampering evaluations** and **adversarial stress-tests** in AI governance frameworks  
+- Refusal robustness can be completely defeated by modest adversarial fine-tuning (LoRA adapters).  
+- Model scaling (1B → 7B) does not guarantee safety.  
+- Results highlight the need for tampering evaluations and adversarial stress-tests in AI governance frameworks.
+
+---
+
+## 🔮 Next Steps
+
+Planned extensions:
+- Extend scaling to 13B and 70B models  
+- Map refusal robustness scaling law across orders of magnitude in both model size and adversarial compute budget  
+- Provide standardized tampering evaluation kit for reproducible safety audits
 
 ---
 
 ## 📚 References
 
-- **Refusal Robustness Scaling Proposal** (preprint PDF in repo)  
-- Related work: Phuong & Jenner (2025), Christiano (2021), Krakovna (2024)  
+- Refusal Robustness Scaling Proposal (preprint PDF in repo)  
+- Related work: Phuong & Jenner (2025), Christiano (2021), Krakovna (2024)

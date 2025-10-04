@@ -85,8 +85,8 @@ RRR ≈ 0.13
 
 CE ≈ 0.87
 
-RD (median) ~ moderate
-→ The pretrained model shows partial but non-trivial refusal robustness.
+RD (median) = moderate drift
+→ Pretrained model shows partial but non-trivial refusal robustness.
 
 After Adversarial LoRA Fine-Tuning (s500, s1000, s2000 steps):
 RRR → 0.0 (collapse)
@@ -94,10 +94,10 @@ RRR → 0.0 (collapse)
 CE → 1.0 (full compliance with harmful requests)
 
 RD → NaN (saturated drift, refusal subspace destroyed)
-→ Longer training reduces loss but does not recover safety. Refusal robustness collapses under LoRA attack regardless of steps.
+→ Training longer reduces loss but does not recover safety. Refusal robustness collapses under LoRA attack regardless of steps.
 
 Cross-Model Scaling (Day3–Day6):
-TinyLlama-1.1B, Phi-3-mini-3.8B show similar collapse patterns.
+TinyLlama-1.1B, Phi-3-mini-3.8B show the same collapse patterns.
 
 Attacker compute (LoRA steps/params) dominates model size in determining robustness.
 
@@ -133,3 +133,4 @@ Highlights the need for tampering evaluations and adversarial training stress-te
 Refusal Robustness Scaling Proposal (preprint PDF in repo)
 
 Related work: Phuong & Jenner (2025), Christiano (2021), Krakovna (2024)
+

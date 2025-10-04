@@ -1,5 +1,11 @@
-numpy
-pandas
-scikit-learn
-tqdm
+transformers>=4.41
+datasets>=2.20
+peft
+accelerate
+bitsandbytes
 sentence-transformers
+scikit-learn
+pandas
+numpy
+tqdm
+matplotlib

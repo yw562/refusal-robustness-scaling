@@ -1,0 +1,7 @@
+steps: 2000
+rank: 8
+bits: 4
+lr: 2.0e-4
+seq_len: 256
+optimizer: paged_adamw_8bit
+save_dir: artifacts/adapters/qwen2_7b_2000

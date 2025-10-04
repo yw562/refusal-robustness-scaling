@@ -78,17 +78,6 @@ We now use the **median RD**, which yields stable values without changing the qu
 
 ---
 
-## 📂 Repository Structure
-
-refusal_scaling/
-├── experiments/            # Day3–Day7 LoRA runs
-├── results/
-│   ├── metrics/            # CSV/JSON metrics
-│   ├── figures/            # Plots
-│   └── samples/            # A/B generations
-├── scripts/                # RD fixes, figure generation
-└── data/
-    └── raw/redteam_eval.csv
 
 ## 🔁 Reproducibility
 
